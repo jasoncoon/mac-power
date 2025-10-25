@@ -5,8 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "bun --hot src/main.ts",
-    "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
-    "compile": "bun build ./src/main.ts --compile --outfile mac-power --sourcemap --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
+    "build": "bun run compile && bun run dmg",
+    "compile": "bun run compile:apple && bun run compile:x64",
+    "compile:apple": "bun build ./src/main.ts --compile --target=bun-darwin-arm64 --outfile ./builds/app/apple/mac-power --sourcemap --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
+    "compile:x64": "bun build ./src/main.ts --compile --target=bun-darwin-x64 --outfile ./builds/app/intel/mac-power --sourcemap --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
+    "dmg": "bun run dmg:apple && bun run dmg:x64",
+    "dmg:apple": "rm -f ./builds/dmg/apple/mac-power.dmg && create-dmg --app-drop-link 0 0 ./builds/dmg/apple/mac-power.dmg ./builds/app/apple",
+    "dmg:x64": "rm -f ./builds/dmg/intel/mac-power.dmg && create-dmg --app-drop-link 0 0 ./builds/dmg/intel/mac-power.dmg ./builds/app/intel",
     "start": "NODE_ENV=production bun src/main.ts"
   },
   "dependencies": {
