@@ -1,6 +1,6 @@
 # Apple MacBook Power Details
 
-Use your MacBook as a USB-PD tester.
+Use your MacBook as a USB-PD tester, view detailed battery information, etc.
 
 Tested only on a MacBook Pro with M4 Pro chip, running MacOS Sequoia 15.7.1. It may run and work on other hardware, but you may need to run or compile using [Bun](https://bun.com) (a fast all-in-one JavaScript runtime). It does require MacOS 13 or higher.
 
@@ -16,7 +16,7 @@ Your default browser should automatically open the app at http://localhost:3000
 
 You may see the following warning:
 
-![not opened warning](/imagesnot-opened.png)
+![not opened warning](images/not-opened.png)
 
 Click `Done`, then open MacOS `System Settings` and then choose the `Privacy & Security` section in the left pane.
 
