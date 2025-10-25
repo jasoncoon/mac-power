@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "mac-power",
+      "name": "MacPower",
       "dependencies": {
         "@ant-design/icons": "^6.1.0",
         "antd": "^5.27.6",

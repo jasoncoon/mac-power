@@ -1,4 +1,4 @@
-# Apple MacBook Power Details
+# MacBook Power Details
 
 Use your MacBook as a USB-PD tester, view detailed battery information, etc.
 
@@ -6,13 +6,26 @@ Tested only on a MacBook Pro with M4 Pro chip, running MacOS Sequoia 15.7.1. It 
 
 ![Web Page Screensot](images/screenshot.png)
 
-## Usage:
+## Installation:
 
-Download and double-click the `mac-power.dmg` file in either `builds/apple` or `builds/intel`, depending on your MacBook processor. In the window that opens drag the app into `Applications`.
+Download and open the `MacPower.dmg` file for your MacBook's processor:
 
-Run the `mac-power` app.
+- [M1 or newer](builds/dmg/apple/MacPower.dmg)
+- [Intel](builds/dmg/intel/MacPower.dmg)
 
-Your default browser should automatically open the app at http://localhost:3000
+In the window that opens drag and drop the `MacPower` file into the `Applications` folder.
+
+Eject the `MacPower` drive.
+
+Run the `MacPower` app.
+
+Your default browser should automatically open the web UI at http://localhost:3000
+
+## If the app opens as a text file, it opens in a text editor:
+
+Make it executable by running: `chmod +x ./MacPower`
+
+## Security Errors
 
 You may see the following warning:
 
@@ -20,33 +33,21 @@ You may see the following warning:
 
 Click `Done`, then open MacOS `System Settings` and then choose the `Privacy & Security` section in the left pane.
 
-Scroll to the bottom to the `Security` section, then click `Open Anyway` next to `"mac-power" was blocked to protect your Mac.`:
+Scroll to the bottom to the `Security` section, then click `Open Anyway` next to `"MacPower" was blocked to protect your Mac.`:
 
 ![not opened warning](images/open-anyway.png)
 
 If it still won't open, run the following command to remove it from MacOS quarantine:
 
-`xattr -d com.apple.quarantine ./mac-power`
+`xattr -d com.apple.quarantine ./MacPower`
 
-To make the Terminal window close automatically:
+## To make the Terminal window close automatically:
 
 In the Terminal app menu bar, click Preferences > Profiles.
 
 Click Basic profile, then the Shell tab.
 
 For `When the shell exits` choose `Close if the shell exited cleanly`.
-
-## Usage from CLI:
-
-Download the `mac-power` file.
-
-Make it executable by running: `chmod +x ./mac-power`
-
-Remove it from quarantine: `xattr -d com.apple.quarantine ./mac-power`
-
-Run `./mac-power`
-
-Your default browser should automatically open the app at http://localhost:3000
 
 ## Development
 

@@ -75,7 +75,7 @@ export function Adapters() {
 
   return <>
     <Space style={{ marginBottom: '.5rem' }}>
-      <span style={{ fontWeight: 800, fontSize: 18 }}>Apple MacBook Power Details</span>
+      <span style={{ fontWeight: 800, fontSize: 18 }}>MacBook Power Details</span>
       <Button icon={<RetweetOutlined />} loading={loading} onClick={async () => await refetch()} />
     </Space>
     {error && <ErrorAlert error={error} message="An error has occurred. Is the app running?" />}
