@@ -1,3 +1,4 @@
+import { errorReplacer } from "@/utils";
 import { AppleFilled, InfoCircleOutlined, RetweetOutlined, StarFilled } from "@ant-design/icons";
 import { Button, Progress, Space, Table, Tag, Tooltip } from "antd";
 import { useCallback, useEffect, useState } from "react";
@@ -13,13 +14,16 @@ function useAdapters() {
 
   const refetch = useCallback(async () => {
     try {
+      setData(undefined);
       setError(undefined);
       setLoading(true);
       const response = await fetch('/api/adapters');
+      console.log(response.ok);
       const data = await response.json();
       setData(data);
     } catch (error) {
-      setError({ message: `Error getting pipelines: ${JSON.stringify(error)}` });
+      console.log(error);
+      setError(new Error(`${Error.isError(error) ? error.message : JSON.stringify(error, errorReplacer())}`));
     } finally {
       setLoading(false);
     }
@@ -67,14 +71,15 @@ export function Adapters() {
 
   const bestAdapterIndex = data?.BestAdapterIndex;
 
-  console.log({ data });
+  console.log({ adapters, data, error, loading });
 
   return <>
-    {error && <ErrorAlert error={error} />}
     <Space style={{ marginBottom: '.5rem' }}>
       <span style={{ fontWeight: 800, fontSize: 18 }}>Apple MacBook Power Details</span>
-      <Button icon={<RetweetOutlined />} onClick={async () => await refetch()} />
+      <Button icon={<RetweetOutlined />} loading={loading} onClick={async () => await refetch()} />
     </Space>
+    {error && <ErrorAlert error={error} message="An error has occurred. Is the app running?" />}
+
     {data && (
       <Descriptions title="Battery Info" items={
         [
@@ -129,107 +134,104 @@ export function Adapters() {
           },
         ]
       } />
-
-      //   <Descriptions.Item label="Average" span={{ sm: 1 }}>
-      //     <TemperatureFromC value={data.BatteryData.LifetimeData.AverageTemperature} />
-      //   </Descriptions.Item>
-      // </Descriptions>
     )}
 
-    <Table
-      size="small"
-      title={() => 'Adapters'}
-      dataSource={adapters}
-      loading={loading}
-      locale={{
-        emptyText: `Found ${adapterCount.toLocaleString()} power adapter${adapterCount !== 1 ? "s" : ""
-          }${adapterCount > 0 ? ":" : ""}`
-      }}
-      pagination={false}
-      rowKey="AdapterID"
-      style={{ marginTop: '.5rem' }}
-      columns={[
-        {
-          render: (_value, _adapter, index) => index === bestAdapterIndex ? <StarFilled title="Best" /> : ''
-        },
-        {
-          dataIndex: 'Manufacturer',
-          title: 'Manufacturer',
-          render: (manufacturer?: string) =>
-            manufacturer?.startsWith('Apple') ?
-              <Space><AppleFilled /><span>{manufacturer}</span></Space> :
-              manufacturer
-        },
-        {
-          dataIndex: 'Name',
-          title: 'Name'
-        },
-        {
-          dataIndex: 'Description',
-          title: 'Description'
-        },
-        {
-          title: 'Voltage',
-          align: 'right',
-          render: (_, adapter) => {
-            if (adapter.UsbHvcMenu.length < 2) {
-              return `${formatNumber(adapter.AdapterVoltage / 1_000)}V`;
-            }
+    {data && (
+      <Table
+        size="small"
+        title={() => 'Adapters'}
+        dataSource={adapters}
+        loading={loading}
+        locale={{
+          emptyText: `Found ${adapterCount.toLocaleString()} power adapter${adapterCount !== 1 ? "s" : ""
+            }${adapterCount > 0 ? ":" : ""}`
+        }}
+        pagination={false}
+        rowKey="AdapterID"
+        style={{ marginTop: '.5rem' }}
+        columns={[
+          {
+            render: (_value, _adapter, index) => index === bestAdapterIndex ? <StarFilled title="Best" /> : ''
+          },
+          {
+            dataIndex: 'Manufacturer',
+            title: 'Manufacturer',
+            render: (manufacturer?: string) =>
+              manufacturer?.startsWith('Apple') ?
+                <Space><AppleFilled /><span>{manufacturer}</span></Space> :
+                manufacturer
+          },
+          {
+            dataIndex: 'Name',
+            title: 'Name'
+          },
+          {
+            dataIndex: 'Description',
+            title: 'Description'
+          },
+          {
+            title: 'Voltage',
+            align: 'right',
+            render: (_, adapter) => {
+              if (adapter.UsbHvcMenu.length < 2) {
+                return `${formatNumber(adapter.AdapterVoltage / 1_000)}V`;
+              }
 
-            return <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
-              {adapter.UsbHvcMenu.map(mode =>
-                <li key={mode.Index}>
-                  {adapter.UsbHvcHvcIndex === mode.Index ? <StarFilled /> : ''}
-                  {formatNumber((mode.MaxVoltage ?? 0) / 1000)}V
-                </li>)}
-            </ul>;
-          }
-        },
-        {
-          title: 'Current',
-          align: 'right',
-          render: (_, adapter) => {
-            if (adapter.UsbHvcMenu.length < 2) {
-              return `${formatNumber(adapter.Current / 1_000)}A`;
-            }
-
-            return <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
-              {adapter.UsbHvcMenu.map(mode =>
-                <li key={mode.Index}>
-                  {adapter.UsbHvcHvcIndex === mode.Index ? <StarFilled /> : ''}
-                  {formatNumber((mode.MaxCurrent ?? 0) / 1000)}A
-                </li>)}
-            </ul>;
-          }
-        },
-        {
-          title: 'Power',
-          align: 'right',
-          render: (_, adapter) => {
-            if (adapter.UsbHvcMenu.length < 2) {
-              return `${formatNumber(adapter.Watts / 1_000)}W`;
-            }
-
-            return <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
-              {adapter.UsbHvcMenu.map(mode => {
-                const { MaxVoltage, MaxCurrent } = mode;
-
-                if (!MaxCurrent || !MaxVoltage) return "";
-
-                const volts = MaxVoltage / 1000;
-                const amps = MaxCurrent / 1000;
-                const watts = volts * amps;
-
-                return (
+              return <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
+                {adapter.UsbHvcMenu.map(mode =>
                   <li key={mode.Index}>
                     {adapter.UsbHvcHvcIndex === mode.Index ? <StarFilled /> : ''}
-                    {formatNumber(watts)}W
-                  </li>);
-              })}
-            </ul>;
+                    {formatNumber((mode.MaxVoltage ?? 0) / 1000)}V
+                  </li>)}
+              </ul>;
+            }
+          },
+          {
+            title: 'Current',
+            align: 'right',
+            render: (_, adapter) => {
+              if (adapter.UsbHvcMenu.length < 2) {
+                return `${formatNumber(adapter.Current / 1_000)}A`;
+              }
+
+              return <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
+                {adapter.UsbHvcMenu.map(mode =>
+                  <li key={mode.Index}>
+                    {adapter.UsbHvcHvcIndex === mode.Index ? <StarFilled /> : ''}
+                    {formatNumber((mode.MaxCurrent ?? 0) / 1000)}A
+                  </li>)}
+              </ul>;
+            }
+          },
+          {
+            title: 'Power',
+            align: 'right',
+            render: (_, adapter) => {
+              if (adapter.UsbHvcMenu.length < 2) {
+                return `${formatNumber(adapter.Watts / 1_000)}W`;
+              }
+
+              return <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
+                {adapter.UsbHvcMenu.map(mode => {
+                  const { MaxVoltage, MaxCurrent } = mode;
+
+                  if (!MaxCurrent || !MaxVoltage) return "";
+
+                  const volts = MaxVoltage / 1000;
+                  const amps = MaxCurrent / 1000;
+                  const watts = volts * amps;
+
+                  return (
+                    <li key={mode.Index}>
+                      {adapter.UsbHvcHvcIndex === mode.Index ? <StarFilled /> : ''}
+                      {formatNumber(watts)}W
+                    </li>);
+                })}
+              </ul>;
+            }
           }
-        }
-      ]}
-    />
+        ]}
+      />
+    )}
   </>;
 }

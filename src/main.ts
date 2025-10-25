@@ -15,6 +15,7 @@ const server = serve({
           const result = await $`ioreg -ar -c AppleSmartBattery`;
           const plistString = result.text();
           const list = plist.parse(plistString) as unknown as Data[];
+          console.log("\nPress return or enter to exit\n");
           return Response.json(list.at(0));
         } catch (err) {
           return new Response(JSON.stringify(err, errorReplacer()), {
@@ -26,15 +27,23 @@ const server = serve({
     },
   },
 
-  development: process.env.NODE_ENV !== "production" && {
+  development: {
     // Enable browser hot reloading in development
-    hmr: true,
+    hmr: process.env.NODE_ENV !== "production",
 
     // Echo console logs from the browser to the server
-    console: true,
+    console: false,
   },
 });
 
 console.log(`🚀 Server running at ${server.url}`);
 
 await $`open ${server.url}`;
+
+console.log("\nPress return or enter to exit\n");
+
+process.stdin.on("readable", () => {
+  if (process.stdin.read() !== null) {
+    process.exit();
+  }
+});
