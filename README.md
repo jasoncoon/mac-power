@@ -2,7 +2,7 @@
 
 Use your MacBook as a USB-PD tester, view detailed battery information, etc.
 
-Tested only on a MacBook Pro with M4 Pro chip, running MacOS Sequoia 15.7.1. It may run and work on other hardware, but you may need to run or compile using [Bun](https://bun.com) (a fast all-in-one JavaScript runtime). It does require MacOS 13 or higher.
+Tested only on MacBook Pros with Apple Silicon (M3 and newer), running MacOS Sequoia 15.7.1 or newer. It may run and work on other hardware, but you may need to run or compile using [Bun](https://bun.com) (a fast all-in-one JavaScript runtime). It does require MacOS 13 or higher.
 
 ![Web Page Screensot](images/screenshot.png)
 

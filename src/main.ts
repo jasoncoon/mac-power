@@ -1,7 +1,6 @@
 import { $, serve } from "bun";
 import * as plist from "plist";
 import index from "./index.html";
-import type { Data } from "./types";
 import { errorReplacer } from "./utils";
 
 const server = serve({
@@ -9,14 +8,34 @@ const server = serve({
     // Serve index.html for all unmatched routes.
     "/*": index,
 
-    "/api/adapters": {
+    "/api/power": {
       async GET() {
         try {
           const result = await $`ioreg -ar -c AppleSmartBattery`;
           const plistString = result.text();
-          const list = plist.parse(plistString) as unknown as Data[];
+          const list = plist.parse(plistString) as unknown as [];
           console.log("\nPress return or enter to exit\n");
           return Response.json(list.at(0));
+        } catch (err) {
+          return new Response(JSON.stringify(err, errorReplacer()), {
+            status: 500,
+            headers: { "content-type": "application/json" },
+          });
+        }
+      },
+    },
+
+    "/api/system": {
+      async GET() {
+        try {
+          const result =
+            await $`system_profiler SPSoftwareDataType SPHardwareDataType`;
+          const text = result.text();
+          console.log("\nPress return or enter to exit\n");
+          return new Response(text, {
+            status: 200,
+            headers: { "content-type": "text//plain" },
+          });
         } catch (err) {
           return new Response(JSON.stringify(err, errorReplacer()), {
             status: 500,

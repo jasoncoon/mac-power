@@ -30,3 +30,33 @@ export function errorReplacer() {
     return value;
   };
 }
+
+export const decimalFormat = new Intl.NumberFormat(undefined, {
+  style: "decimal",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+export const numberFormat = new Intl.NumberFormat(undefined, {
+  style: "decimal",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
+export const percentFormat = new Intl.NumberFormat(undefined, {
+  style: "percent",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
+export function formatDecimal(number: number): string {
+  return decimalFormat.format(number);
+}
+
+export function formatNumber(number: number): string {
+  return numberFormat.format(number);
+}
+
+export function formatPercent(number: number): string {
+  return percentFormat.format(number);
+}

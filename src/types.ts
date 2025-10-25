@@ -1,4 +1,4 @@
-export interface Data {
+export interface PowerData {
   AppleRawAdapterDetails: Adapter[];
   AppleRawBatteryVoltage: number;
   AppleRawCurrentCapacity: number;

@@ -1,6 +1,6 @@
 import { Alert, App as AntApp, ConfigProvider, theme } from 'antd';
 import enUS from 'antd/locale/en_US';
-import { Adapters } from './components/Adapters';
+import { Main } from './components/Main';
 import "./index.css";
 
 export function App() {
@@ -14,7 +14,7 @@ export function App() {
       <AntApp>
         <Alert.ErrorBoundary>
           <div className="app">
-            <Adapters />
+            <Main />
           </div>
         </Alert.ErrorBoundary>
       </AntApp>

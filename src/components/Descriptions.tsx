@@ -6,14 +6,15 @@ export interface Item {
   value: ReactNode;
 }
 
-export default function Descriptions({ title, items }: { title: string, items: Item[] }) {
+export default function Descriptions({ title, items }: { title?: string, items: Item[] }) {
   return (
     <table style={{ borderSpacing: '.5rem' }}>
-      <thead>
-        <tr>
-          <th colSpan={2}>{title}</th>
-        </tr>
-      </thead>
+      {title && (
+        <thead>
+          <tr>
+            <th colSpan={2}>{title}</th>
+          </tr>
+        </thead>)}
       <tbody>
         {items.map(({ key, label, value }, index) => {
           const keyOrLabel = key ? key : typeof label === 'string' ? label : index;
