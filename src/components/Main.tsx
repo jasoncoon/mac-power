@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AdapterInfo } from "./AdapterInfo";
 import BatteryInfo from "./BatteryInfo";
 import ErrorAlert from "./ErrorAlert";
-import { SystemInfo } from "./SystemInfo";
+import { InfoCard } from "./InfoCard";
 
 export function Main() {
   function usePowerData() {
@@ -83,7 +83,10 @@ export function Main() {
         </Card>
       </Col>
       <Col>
-        <SystemInfo />
+        <InfoCard title="System Hardware" route="hardware" />
+      </Col>
+      <Col>
+        <InfoCard title="System Software" route="software" />
       </Col>
     </Row>
   </>;

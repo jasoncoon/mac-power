@@ -13,6 +13,7 @@ export function AdapterInfo({ data, loading }: { data?: PowerData, loading: bool
   return data && (
     <Table
       size="small"
+      showHeader={(adapters?.length ?? 0) > 0}
       dataSource={adapters}
       loading={loading}
       locale={{

@@ -1,5 +1,5 @@
 import type { PowerData } from "@/types";
-import { formatDecimal, formatNumber, formatPercent } from "@/utils";
+import { formatDecimal, formatPercent } from "@/utils";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Progress, Tag, Tooltip } from "antd";
 import Descriptions from "./Descriptions";
@@ -12,24 +12,30 @@ export default function BatteryInfo({ data }: { data?: PowerData }) {
       [
         {
           label: 'Charge',
-          value: <Progress percent={data.CurrentCapacity} size='small'
+          value: <Progress
+            size='small'
+            status="normal"
             style={{ maxWidth: 240 }}
+            percent={data.CurrentCapacity}
+            format={(percent) => formatPercent((percent ?? 0) / 100)}
             strokeColor={`hsl(${(data.CurrentCapacity / 100 * 120)} 100 50)`} />
         },
         {
           label: 'Capacity',
           value:
             <Progress
-              format={(percent) => formatPercent((percent ?? 0) / 100)}
-              percent={(data.AppleRawMaxCapacity / data.NominalChargeCapacity) * 100} size='small'
+              size='small'
+              status="normal"
               style={{ maxWidth: 240 }}
+              format={(percent) => formatPercent((percent ?? 0) / 100)}
+              percent={(data.AppleRawMaxCapacity / data.NominalChargeCapacity) * 100}
               strokeColor={`hsl(${(data.CurrentCapacity / 100 * 120)} 100 50)`} />
         },
         {
           key: 'capacity2',
           value:
             <>
-              <span>({formatNumber(data.AppleRawMaxCapacity / 1000)} of {formatNumber(data.NominalChargeCapacity / 1000)} Ah)</span>
+              <span>({formatDecimal(data.AppleRawMaxCapacity / 1000)} of {formatDecimal(data.NominalChargeCapacity / 1000)} Ah)</span>
               <Tooltip title="This is a measure of battery capacity relative to when it was new. Lower capacity may result in fewer hours of usage between charges.">
                 <InfoCircleOutlined style={{ marginLeft: '.5rem' }} />
               </Tooltip>

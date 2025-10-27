@@ -25,17 +25,50 @@ const server = serve({
       },
     },
 
-    "/api/system": {
+    "/api/system/software": {
       async GET() {
         try {
-          const result =
-            await $`system_profiler SPSoftwareDataType SPHardwareDataType`;
-          const text = result.text();
+          const items = await getSystemProfilerData("SPSoftwareDataType", [
+            "Software:",
+            "System Software Overview:",
+          ]);
           console.log("\nPress return or enter to exit\n");
-          return new Response(text, {
-            status: 200,
-            headers: { "content-type": "text//plain" },
+          return Response.json(items);
+        } catch (err) {
+          return new Response(JSON.stringify(err, errorReplacer()), {
+            status: 500,
+            headers: { "content-type": "application/json" },
           });
+        }
+      },
+    },
+
+    "/api/system/hardware": {
+      async GET() {
+        try {
+          const items = await getSystemProfilerData("SPHardwareDataType", [
+            "Hardware:",
+            "Hardware Overview:",
+          ]);
+          console.log("\nPress return or enter to exit\n");
+          return Response.json(items);
+        } catch (err) {
+          return new Response(JSON.stringify(err, errorReplacer()), {
+            status: 500,
+            headers: { "content-type": "application/json" },
+          });
+        }
+      },
+    },
+
+    "/api/system/power": {
+      async GET() {
+        try {
+          const items = await getSystemProfilerData("SPPowerDataType", [
+            "Power:",
+          ]);
+          console.log("\nPress return or enter to exit\n");
+          return Response.json(items);
         } catch (err) {
           return new Response(JSON.stringify(err, errorReplacer()), {
             status: 500,
@@ -66,3 +99,17 @@ process.stdin.on("readable", () => {
     process.exit();
   }
 });
+
+async function getSystemProfilerData(dataType: string, filterLines?: string[]) {
+  const result = await $`system_profiler ${dataType} `;
+  const lines = result
+    .text()
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => !!l && !(filterLines ?? []).includes(l));
+  const items = lines.map((l) => {
+    const [label, value] = l.split(":");
+    return { label, value };
+  });
+  return items;
+}
