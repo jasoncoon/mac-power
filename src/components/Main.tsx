@@ -19,11 +19,11 @@ export function Main() {
         setError(undefined);
         setLoading(true);
         const response = await fetch('/api/power');
-        console.log(response.ok);
+        // console.log(response.ok);
         const data = await response.json();
         setData(data);
       } catch (error) {
-        console.log(error);
+        // console.error(error);
         setData(undefined);
         setError(new Error(`${Error.isError(error) ? error.message : JSON.stringify(error, errorReplacer())}`));
       } finally {
@@ -42,7 +42,7 @@ export function Main() {
 
   const { adapters, data: powerData, error, loading, refetch } = usePowerData();
 
-  console.log({ adapters, powerData, error, loading });
+  // console.log({ adapters, powerData, error, loading });
 
   return <>
     <Space style={{ fontWeight: 800, fontSize: 18, marginBottom: '.5rem' }}>MacBook Details

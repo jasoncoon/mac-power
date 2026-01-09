@@ -15,11 +15,11 @@ function useData(route: string) {
       setError(undefined);
       setLoading(true);
       const response = await fetch(`/api/system/${route}`);
-      console.log(response.ok);
+      // console.log(response.ok);
       const data = await response.json();
       setData(data);
     } catch (error) {
-      console.log(error);
+      // console.error(error);
       setData(undefined);
       setError(new Error(`${Error.isError(error) ? error.message : JSON.stringify(error, errorReplacer())}`));
     } finally {
@@ -39,7 +39,7 @@ function useData(route: string) {
 export function InfoCard({ title, route }: { title: string, route: string }) {
   const { data, error, loading, refetch } = useData(route);
 
-  console.log({ data, error, loading });
+  // console.log({ data, error, loading });
 
   return (
     <Card
